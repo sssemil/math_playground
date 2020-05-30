@@ -85,20 +85,46 @@ class Dwt41 {
 
     fun testXY() {
         val r1_3 = Rational(
-            binom(13, 3) * binom(13, 0) * binom(13, 0) * binom(13, 0)
-                    * factorial(4) / factorial(3),
+            binom(13, 3) * binom(4, 1),
             binom(52, 3)
         )
 
         println("testXY: r1_3 = $r1_3 = ${r1_3.toDouble()}")
 
         val r2_2 = Rational(
-            binom(13, 2) * binom(13, 1) * binom(13, 0) * binom(13, 0) * binom(13 - 2, 2)
-                    * factorial(4) / factorial(2),
+            binom(4, 2) * binom(2, 1) * binom(13, 2) * binom(2, 1),
             binom(52, 3)
         )
 
         println("testXY: r2_2 = $r2_2 = ${r2_2.toDouble()}")
+
+        val r2_3 = Rational(
+            binom(4, 2) * binom(2, 1) * binom(13, 2) * binom(13 - 2, 1),
+            binom(52, 3)
+        )
+
+        println("testXY: r2_3 = $r2_3 = ${r2_3.toDouble()}")
+
+        val r3_1 = Rational(
+            binom(4, 3) * binom(13, 1),
+            binom(52, 3)
+        )
+
+        println("testXY: r3_1 = $r3_1 = ${r3_1.toDouble()}")
+
+        val r3_2 = Rational(
+            binom(13, 1) * binom(13, 1) * binom(13, 1) * binom(4, 3),
+            binom(52, 3)
+        )
+
+        println("testXY: r3_2 = $r3_2 = ${r3_2.toDouble()}")
+
+        val r3_3 = Rational(
+            binom(4, 2) * binom(4, 1) * binom(13, 3),
+            binom(52, 3)
+        )
+
+        println("testXY: r3_3 = $r3_3 = ${r3_3.toDouble()}")
     }
 
     fun main() {
