@@ -9,17 +9,17 @@ import kotlin.math.max
 @PublicApi
 class Rational() : Number(), Comparable<Rational> {
 
-    var numerator: Int = 0
+    var numerator: Long = 0
         @PublicApi
         private set
 
-    var denominator: Int = 0
+    var denominator: Long = 0
         @PublicApi
         private set
 
     constructor(numerator: Number, denominator: Number) : this() {
-        this.numerator = numerator.toInt()
-        this.denominator = denominator.toInt()
+        this.numerator = numerator.toLong()
+        this.denominator = denominator.toLong()
 
         reduce()
     }
@@ -34,19 +34,19 @@ class Rational() : Number(), Comparable<Rational> {
             this.denominator = -this.denominator
         }
 
-        if (this.denominator == 0 && this.numerator > 0) {
+        if (this.denominator == 0L && this.numerator > 0) {
             // +Infinity
             this.numerator = 1
             this.denominator = 0
-        } else if (this.denominator == 0 && this.numerator < 0) {
+        } else if (this.denominator == 0L && this.numerator < 0) {
             // -Infinity
             this.numerator = 1
             this.denominator = 0
-        } else if (this.denominator == 0 && this.numerator == 0) {
+        } else if (this.denominator == 0L && this.numerator == 0L) {
             // NaN
             this.numerator = 0
             this.denominator = 0
-        } else if (this.numerator == 0) {
+        } else if (this.numerator == 0L) {
             this.numerator = 0
             this.denominator = 1
         } else {
@@ -57,7 +57,7 @@ class Rational() : Number(), Comparable<Rational> {
     @PublicApi
     fun simplify(): Rational {
         for (i in 2..max(numerator, denominator)) {
-            while (numerator % i == 0 && denominator % i == 0) {
+            while (numerator % i == 0L && denominator % i == 0L) {
                 numerator /= i
                 denominator /= i
             }
@@ -68,27 +68,27 @@ class Rational() : Number(), Comparable<Rational> {
 
     @PublicApi
     val isNaN: Boolean
-        get() = denominator == 0 && numerator == 0
+        get() = denominator == 0L && numerator == 0L
 
     @PublicApi
     val isInfinite: Boolean
-        get() = numerator != 0 && denominator == 0
+        get() = numerator != 0L && denominator == 0L
 
     @PublicApi
     val isFinite: Boolean
-        get() = denominator != 0
+        get() = denominator != 0L
 
     @PublicApi
     val isZero: Boolean
-        get() = isFinite && numerator == 0
+        get() = isFinite && numerator == 0L
 
     @PublicApi
     val isPosInf: Boolean
-        get() = denominator == 0 && numerator > 0
+        get() = denominator == 0L && numerator > 0
 
     @PublicApi
     val isNegInf: Boolean
-        get() = denominator == 0 && numerator < 0
+        get() = denominator == 0L && numerator < 0
 
     @PublicApi
     val isOne: Boolean
@@ -120,14 +120,14 @@ class Rational() : Number(), Comparable<Rational> {
         isPosInf -> Int.MAX_VALUE
         isNegInf -> Int.MIN_VALUE
         isNaN -> 0
-        else -> numerator / denominator
+        else -> (numerator / denominator).toInt()
     }
 
     override fun toLong(): Long = when {
         isPosInf -> Long.MAX_VALUE
         isNegInf -> Long.MIN_VALUE
         isNaN -> 0
-        else -> (numerator / denominator).toLong()
+        else -> numerator / denominator
     }
 
     operator fun plus(other: Number): Rational {
@@ -199,9 +199,9 @@ class Rational() : Number(), Comparable<Rational> {
             return -1
         }
 
-        // using long to avoid overflow
-        val thisNumerator: Long = this.numerator.toLong() * other.denominator.toLong()
-        val otherNumerator: Long = other.numerator.toLong() * this.denominator.toLong()
+        // TODO: Think about overflowing
+        val thisNumerator: Long = this.numerator * other.denominator
+        val otherNumerator: Long = other.numerator * this.denominator
 
         return when {
             thisNumerator < otherNumerator -> -1
@@ -221,8 +221,8 @@ class Rational() : Number(), Comparable<Rational> {
             } else if (this.isZero && !other.isZero) {
                 false
             } else {
-                this.denominator.toLong() * other.numerator.toLong() ==
-                        other.denominator.toLong() * this.numerator.toLong()
+                this.denominator * other.numerator ==
+                        other.denominator * this.numerator
             }
         } ?: false
     }
