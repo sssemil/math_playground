@@ -49,7 +49,7 @@ fun main() {
             acc + pr
         }).let { sumTotal ->
 
-        check(sumTotal.isOne())
+        check(sumTotal.isOne)
     }
 
     val calcLt10Prob = calc(counts) { it < 10 }.simplify()

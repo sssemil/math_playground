@@ -1,7 +1,6 @@
 package dwt
 
 import com.marcinmoskala.math.permutations
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -11,33 +10,38 @@ import kotlin.random.Random
 
 class Dwt43 {
 
-    private fun sim(maxN: Int, iterations: Int): Pair<Int, Deferred<Map<Int, List<Int>>>> =
-        Pair(maxN, GlobalScope.async {
-            val stats = mutableListOf<Int>()
-            repeat(iterations) {
-                val balls = (1..maxN).toMutableList()
+    /**
+     * This function simulates taking balls.
+     *
+     * @param maxN number of balls.
+     * @param iterations number of experiments to perform.
+     */
+    private fun simAsync(maxN: Int, iterations: Int) = GlobalScope.async {
+        (1..iterations).map {
+            val balls = (1..maxN).toMutableList()
 
-                var count = 0
-                var prev = 0
+            var count = 0
+            var prev = 0
 
-                while (balls.isNotEmpty()) {
-                    val ri = if (balls.size <= 1) 0 else Random.nextInt(balls.size - 1)
-                    val curr = balls[ri]
-                    balls.removeAt(ri)
+            while (balls.isNotEmpty()) {
+                val ri = if (balls.size <= 1) 0 else Random.nextInt(balls.size - 1)
+                val curr = balls[ri]
+                balls.removeAt(ri)
 
-                    count++
-                    if (prev > curr) {
-                        break
-                    }
-                    prev = curr
+                count++
+                if (prev > curr) {
+                    break
                 }
-
-                stats.add(count)
+                prev = curr
             }
-            stats.groupBy { it }.toSortedMap()
-        })
 
-    private fun calc(maxN: Int): Pair<Int, Deferred<Map<Int, List<Int>>>> {
+            count
+        }.groupBy {
+            it
+        }.toSortedMap()
+    }
+
+    private fun calcAsync(maxN: Int) = GlobalScope.async {
         val perms = Array(maxN) { it + 1 }.toSet().permutations()
         val shortPerms = perms.map { perm ->
             var count = 0
@@ -53,7 +57,7 @@ class Dwt43 {
             perm.subList(0, count)
         }
 
-        return Pair(maxN, GlobalScope.async { shortPerms.map { it.size }.groupBy { it }.toSortedMap() })
+        shortPerms.map { it.size }.groupBy { it }.toSortedMap()
     }
 
     fun main() = runBlocking {
@@ -66,14 +70,12 @@ class Dwt43 {
         //------------------------------------------------------------
 
         val iterations = 10_000_000
-        val maxMaxN = 9
-        val resSim = mutableListOf<Pair<Int, Deferred<Map<Int, List<Int>>>>>()
-        val resCalc = mutableListOf<Pair<Int, Deferred<Map<Int, List<Int>>>>>()
-        var i = 9
-        while (i <= maxMaxN) {
-            resSim.add(sim(i, iterations))
-            resCalc.add(calc(i))
-            i++
+
+        val minMaxN = 10
+        val maxMaxN = 10
+
+        val resSim = (minMaxN..maxMaxN).map {
+            Pair(it, simAsync(it, iterations))
         }
 
         resSim.forEach { (n, rsDeferred) ->
@@ -86,6 +88,10 @@ class Dwt43 {
                 }
                 println("--------------------------------------------------------------------------------")
             }
+        }
+
+        val resCalc = (minMaxN..maxMaxN).map {
+            Pair(it, calcAsync(it))
         }
 
         resCalc.forEach { (n, rsDeferred) ->
