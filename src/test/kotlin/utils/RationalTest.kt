@@ -7,10 +7,6 @@ import kotlin.test.expect
 class RationalTest {
 
     @Test
-    fun testFactorial() {
-    }
-
-    @Test
     fun add2RationalsTest() {
         expect(Rational(3, 4)) {
             Rational(1, 2) + Rational(1, 4)

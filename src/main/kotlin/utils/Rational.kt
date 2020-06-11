@@ -3,6 +3,8 @@ package utils
 import kotlin.math.max
 
 /**
+ * Rational number implementation.
+ *
  * Some ideas and some code part ~taken~ from [https://github.com/sanity/kotlin-rational/] and from
  * [https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/util/Rational.java].
  */
@@ -50,7 +52,7 @@ class Rational() : Number(), Comparable<Rational> {
             this.numerator = 0
             this.denominator = 1
         } else {
-            simplify()
+            // simplify()
         }
     }
 
