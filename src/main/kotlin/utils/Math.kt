@@ -31,3 +31,21 @@ fun binom1(n: Long, k: Long): Rational {
 }
 
 fun binom(n: Long, k: Long) = binom1(n, k)
+
+/**
+ * Partial derangements.
+ *
+ * [https://en.wikipedia.org/wiki/Rencontres_numbers]
+ *
+ */
+fun rencontresNumber(n: Long, m: Long): Rational {
+    val a = Rational(factorial(n), factorial(m))
+    val sum = (0..n - m).map { k ->
+        if (k % 2 == 0L) {
+            Rational(1, factorial(k))
+        } else {
+            Rational(-1, factorial(k))
+        }
+    }.sum()
+    return a*sum
+}

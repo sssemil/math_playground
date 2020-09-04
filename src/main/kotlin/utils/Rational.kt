@@ -5,7 +5,7 @@ import kotlin.math.max
 /**
  * Rational number implementation.
  *
- * Some ideas and some code part ~taken~ from [https://github.com/sanity/kotlin-rational/] and from
+ * Some ideas and code parts ~taken~ from [https://github.com/sanity/kotlin-rational/] and from
  * [https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/util/Rational.java].
  */
 @PublicApi
@@ -52,7 +52,7 @@ class Rational() : Number(), Comparable<Rational> {
             this.numerator = 0
             this.denominator = 1
         } else {
-            // simplify()
+            simplify()
         }
     }
 
@@ -251,7 +251,7 @@ class Rational() : Number(), Comparable<Rational> {
     }
 }
 
-private fun Number.toRational(): Rational {
+fun Number.toRational(): Rational {
     if (this is Int || this is Long || this is Short || this is Byte) {
         return Rational(this, 1)
     } else {
@@ -300,4 +300,8 @@ private fun Number.toRational(): Rational {
 
         return Rational(a, b)
     }
+}
+
+fun Iterable<Rational>.sum() = fold(Rational.ZERO) { acc, it ->
+    acc + it
 }
